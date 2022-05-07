@@ -16,10 +16,10 @@ public abstract class ObjectBase {
 		this.obeysGravity = obeysGravity;
 	}
 	
-	String[] imgPaths;
+	BufferedImage[] imgs;
 	int pathToDisplay = 0;
-	public void setImgPaths(String[] imgPaths) {
-		this.imgPaths = imgPaths;
+	public void setImgs(BufferedImage[] imgPaths) {
+		this.imgs = imgPaths;
 	}
 	int getPathToDisplay() {
 		return pathToDisplay;
@@ -91,8 +91,8 @@ public abstract class ObjectBase {
 		y += yVel;
 	}
 	
-	String getImagePath() {
-		return imgPaths[pathToDisplay];
+	BufferedImage getImage() {
+		return imgs[pathToDisplay];
 	}
 	
 	private boolean hasTurnedLeft = false;
@@ -104,13 +104,9 @@ public abstract class ObjectBase {
 	}
 	void drawObject(Graphics g, double xInc, double yInc) {
 		Graphics2D g2d = (Graphics2D) g.create();
-		try {
-			BufferedImage image = ImageIO.read(new File(imgPaths[pathToDisplay]));
-			//g2d.rotate(Math.atan2(proj.getyVel(), proj.getxVel())-(Math.PI/2), proj.getX()-(proj.getHitboxWidth()/2)+playerXInc, proj.getY()-(proj.getHitboxHeight()/2)+playerYInc);
-			g2d.drawImage(image, (int)(x+(hasTurnedLeft? image.getWidth()/2 : -image.getWidth()/2)+xInc), (int)(y-image.getHeight()/2+yInc), (hasTurnedLeft ? -image.getWidth() : image.getWidth()), image.getHeight(), null);
-			g2d.dispose();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage image = imgs[pathToDisplay];
+		//g2d.rotate(Math.atan2(proj.getyVel(), proj.getxVel())-(Math.PI/2), proj.getX()-(proj.getHitboxWidth()/2)+playerXInc, proj.getY()-(proj.getHitboxHeight()/2)+playerYInc);
+		g2d.drawImage(image, (int)(x+(hasTurnedLeft? image.getWidth()/2 : -image.getWidth()/2)+xInc), (int)(y-image.getHeight()/2+yInc), (hasTurnedLeft ? -image.getWidth() : image.getWidth()), image.getHeight(), null);
+		g2d.dispose();
 	}
 }

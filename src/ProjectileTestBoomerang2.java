@@ -10,9 +10,11 @@ public class ProjectileTestBoomerang2 extends ProjectileAngular {
 
 	public ProjectileTestBoomerang2(double x, double y, double angle, double velocity, Entity reference) {
 		super(x, y, angle, velocity, 10, 10, 100, new boolean[] {false, true}, 5);
-		setImgPaths(new String[] {
-				"boomerang1.png"
-		});
+		try {
+			setImgs(new BufferedImage[] {
+					ImageIO.read(new File("boomerang1.png"))
+			});
+		} catch (IOException e) {}
 		setPierceLeft(100000);
 		setObeysGravity(false);
 		this.reference = reference;
@@ -38,15 +40,11 @@ public class ProjectileTestBoomerang2 extends ProjectileAngular {
 	@Override
 	void drawObject(Graphics g, double xInc, double yInc) {
 		Graphics2D g2d = (Graphics2D) g.create();
-		try {
-			BufferedImage image = ImageIO.read(new File(getImagePath()));
-			g2d.rotate(angleInc-Math.PI/2, getX()+xInc, getY()+yInc);
-			g2d.drawImage(image, (int)(getX()-image.getWidth()/2+xInc), (int)(getY()-image.getHeight()/2+yInc), null);
-			g2d.dispose();
-			angleInc += 0.3;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage image = getImage();
+		g2d.rotate(angleInc-Math.PI/2, getX()+xInc, getY()+yInc);
+		g2d.drawImage(image, (int)(getX()-image.getWidth()/2+xInc), (int)(getY()-image.getHeight()/2+yInc), null);
+		g2d.dispose();
+		angleInc += 0.3;
 	}
 
 	@Override

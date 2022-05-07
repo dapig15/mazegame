@@ -8,16 +8,35 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
 
 	public Player(int x, int y, int xVel, int yVel, int hitboxWidth, int hitboxHeight) {
 		super(x, y, xVel, yVel, hitboxWidth, hitboxHeight, 0, 200);
+		/*
 		this.setImgPaths(new String[] {
 				"player_walking_0.png",
 				"player_walking_1.png",
 				"player_walking_2.png",
 		});
+		*/
+		try {
+			this.setImgs(new BufferedImage[] {
+					PictureFixer.removeBackground(ImageIO.read(new File("run1.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run2.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run3.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run4.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run5.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run6.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run7.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("run8.png")))
+			});
+		} catch (IOException e) {}
 	}
 
 	private int jumpsLeft = 0, maxJumps = 2;
@@ -43,7 +62,7 @@ public class Player extends Entity {
 		@Override
 		public void keyPressed(KeyEvent e) {
 	        int key = e.getKeyCode();
-	        if (key == KeyEvent.VK_SPACE) {
+	        if (key == KeyEvent.VK_W) {
 	        	boolean againstWall = false;
 	        	for (Platform plat : Main.platforms) {
 	        		// TODO dont wall jum pfirst
@@ -145,9 +164,12 @@ public class Player extends Entity {
     		Point mousePosition = MouseInfo.getPointerInfo().getLocation();
     		SwingUtilities.convertPointFromScreen(mousePosition, mainPanel);
 			double angle = Math.atan2(mousePosition.getY()-(screenY), mousePosition.getX()-(screenX));
-			ProjectileTest testArrow = new ProjectileTest(getX(), getY(), angle, 20);
-			if (testArrow.shouldKill() < 0)
-				Main.projectiles.add(testArrow);
+			//ProjectileTest testArrow = new ProjectileTest(getX(), getY(), angle, 20);
+			ProjectileTestBoomerang2 testBoomerang = new ProjectileTestBoomerang2(getX(), getY(), angle, 20, this);
+			if (/*testArrow.shouldKill() < 0*/ testBoomerang.shouldKill() < 0) {
+				//Main.projectiles.add(testArrow);
+				Main.projectiles.add(testBoomerang);
+			}
 			projectileCooldown = 4;
 			//projectilesLeft--;
     	}
@@ -158,14 +180,14 @@ public class Player extends Entity {
 			setxVel(Math.min(maxSpeed, getxVel()+slipFactor));
 			frameCooldown--;
 			if (frameCooldown <= 0) {
-				setPathToDisplay((getPathToDisplay()+1)%3);
+				setPathToDisplay((getPathToDisplay()+1)%this.imgs.length);
 				frameCooldown = (int) (maxSpeed+1-Math.abs(getxVel()));
 			}
 		} else if (currentDirection == 'A' && getxVel() > -maxSpeed) {
 			setxVel(Math.max(-maxSpeed, getxVel()-slipFactor));
 			frameCooldown--;
 			if (frameCooldown <= 0) {
-				setPathToDisplay((getPathToDisplay()+1)%3);
+				setPathToDisplay((getPathToDisplay()+1)%this.imgs.length);
 				frameCooldown = (int) (maxSpeed+1-Math.abs(getxVel()));
 			}
 		} else {
@@ -204,8 +226,8 @@ public class Player extends Entity {
 	
 	@Override
 	boolean hitByProjectile(Projectile p) {
-		setxVel(getxVel()+(p.getxVel()/3));
-		setyVel(-10);
+		//setxVel(getxVel()+(p.getxVel()/3));
+		//setyVel(-10);
 		setHp(getHp()-p.getDamage());
 		setInvincibility(p.getInvincibilityFrames());
 		return true;

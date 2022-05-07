@@ -97,13 +97,9 @@ public abstract class Projectile extends ObjectWithColliders {
 	@Override
 	void drawObject(Graphics g, double xInc, double yInc) {
 		Graphics2D g2d = (Graphics2D) g.create();
-		try {
-			BufferedImage image = ImageIO.read(new File(getImagePath()));
+			BufferedImage image = getImage();
 			g2d.rotate(Math.atan2(getyVel(), getxVel())-(Math.PI/2), getX()+xInc, getY()+yInc);
 			g2d.drawImage(image, (int)(getX()-image.getWidth()/2+xInc), (int)(getY()-image.getHeight()/2+yInc), null);
 			g2d.dispose();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

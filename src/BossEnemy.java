@@ -1,16 +1,23 @@
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 public class BossEnemy extends Entity {
 
 	public BossEnemy(int x, int y, int xVel, int yVel, int hitboxWidth, int hitboxHeight, Player playerReference) {
 		super(x, y, xVel, yVel, hitboxWidth, hitboxHeight, 1, 150);
 		this.playerReference = playerReference;
-		this.setImgPaths(new String[] {
-				"enemy_walking_0.png",
-				"enemy_walking_1.png",
-				"enemy_walking_2.png"
-		});
+		try {
+			this.setImgs(new BufferedImage[] {
+					ImageIO.read(new File("enemy_walking_0.png")),
+					ImageIO.read(new File("enemy_walking_1.png")),
+					ImageIO.read(new File("enemy_walking_2.png"))
+			});
+		} catch (IOException e) {}
 	}
 
 	@Override

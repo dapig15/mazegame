@@ -123,8 +123,10 @@ public class Main {
 		entities.add(mainPlayer);
 		BossEnemy enemy = new BossEnemy(300, 128, 0, 0, 64, 96, mainPlayer);
 		entities.add(enemy);
-		// BossEnemy enemy2 = new BossEnemy(300, 0, 0, 0, 50, 50, mainPlayer);
-		// entities.add(enemy2);
+		BossEnemy enemy2 = new BossEnemy(300, 128, 0, 0, 50, 50, mainPlayer);
+		entities.add(enemy2);
+		BossEnemy enemy3 = new BossEnemy(300, 128, 0, 0, 50, 50, mainPlayer);
+		entities.add(enemy3);
 		mainPanel = new GamePanel();
 		mainFrame.setContentPane(mainPanel);
 		mainFrame.pack();
