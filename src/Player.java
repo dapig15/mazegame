@@ -27,6 +27,14 @@ public class Player extends Entity {
 		*/
 		try {
 			this.setImgs(new BufferedImage[] {
+					PictureFixer.removeBackground(ImageIO.read(new File("idle1.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle2.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle3.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle4.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle5.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle6.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle7.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("idle8.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run1.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run2.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run3.png"))),
@@ -34,12 +42,14 @@ public class Player extends Entity {
 					PictureFixer.removeBackground(ImageIO.read(new File("run5.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run6.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run7.png"))),
-					PictureFixer.removeBackground(ImageIO.read(new File("run8.png")))
+					PictureFixer.removeBackground(ImageIO.read(new File("run8.png"))),
 			});
 		} catch (IOException e) {}
 	}
 
 	private int jumpsLeft = 0, maxJumps = 2;
+	private int cycle = 0;
+	private char indicator = 'N';
 	private char currentDirection = 'N';
 	private PlayerKeyAdapter pka = new PlayerKeyAdapter();
 	private int screenX = 0, screenY = 0;
@@ -180,14 +190,14 @@ public class Player extends Entity {
 			setxVel(Math.min(maxSpeed, getxVel()+slipFactor));
 			frameCooldown--;
 			if (frameCooldown <= 0) {
-				setPathToDisplay((getPathToDisplay()+1)%this.imgs.length);
+				//setPathToDisplay((getPathToDisplay()+1)%this.imgs.length);
 				frameCooldown = (int) (maxSpeed+1-Math.abs(getxVel()));
 			}
 		} else if (currentDirection == 'A' && getxVel() > -maxSpeed) {
 			setxVel(Math.max(-maxSpeed, getxVel()-slipFactor));
 			frameCooldown--;
 			if (frameCooldown <= 0) {
-				setPathToDisplay((getPathToDisplay()+1)%this.imgs.length);
+				//setPathToDisplay((getPathToDisplay()+1)%this.imgs.length);
 				frameCooldown = (int) (maxSpeed+1-Math.abs(getxVel()));
 			}
 		} else {
@@ -207,6 +217,17 @@ public class Player extends Entity {
 		dashCooldown = Math.max(0, dashCooldown-1);
 		dashWindow = Math.max(0, dashWindow-1);
 		
+		if (currentDirection != indicator) {
+			cycle = 0;
+			indicator = currentDirection;
+		} else
+			cycle++;
+		if (currentDirection == 'N') {
+			setPathToDisplay(cycle/4 % 8);
+		} else {
+			setPathToDisplay(cycle/2 % 8 + 8);
+		}
+
 		super.process();
 		
 		for (Platform plat : Main.platforms) {
