@@ -237,7 +237,7 @@ public class Player extends Entity {
 			} else
 				cycle++;
 			if (currentDirection == 'N') {
-				setPathToDisplay(cycle/2 % 8);
+				setPathToDisplay(cycle/3 % 8);
 			} else {
 				setPathToDisplay(cycle/2 % 8 + 8);
 			}
