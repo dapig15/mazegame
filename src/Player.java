@@ -43,12 +43,20 @@ public class Player extends Entity {
 					PictureFixer.removeBackground(ImageIO.read(new File("run6.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run7.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("run8.png"))),
+					//PictureFixer.removeBackground(ImageIO.read(new File("dash14.png"))),
+					//PictureFixer.removeBackground(ImageIO.read(new File("dash13.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("dash12.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("dash11.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("dash10.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("dash9.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("dash8.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("dash7.png"))),
 			});
 		} catch (IOException e) {}
 	}
 
 	private int jumpsLeft = 0, maxJumps = 2;
-	private int cycle = 0;
+	private int cycle = 0, dashing = 0, dashFrames = 12;
 	private char indicator = 'N';
 	private char currentDirection = 'N';
 	private PlayerKeyAdapter pka = new PlayerKeyAdapter();
@@ -105,6 +113,7 @@ public class Player extends Entity {
 	        		dashWindow = 0;
 	        		setInvincibility(8);
 	        		dashCooldown = 20;
+					dashing = dashFrames;
 	        	}
 	        } else if (key == KeyEvent.VK_A) {
 	        	currentDirection = 'A';
@@ -114,6 +123,7 @@ public class Player extends Entity {
 	        		dashWindow = 0;
 	        		setInvincibility(8);
 	        		dashCooldown = 20;
+					dashing = dashFrames;
 	        	}
 	        }
 	    }
@@ -217,15 +227,20 @@ public class Player extends Entity {
 		dashCooldown = Math.max(0, dashCooldown-1);
 		dashWindow = Math.max(0, dashWindow-1);
 		
-		if (currentDirection != indicator) {
-			cycle = 0;
-			indicator = currentDirection;
-		} else
-			cycle++;
-		if (currentDirection == 'N') {
-			setPathToDisplay(cycle/4 % 8);
+		if (dashing > 0) {
+			setPathToDisplay((6-dashing/2) + 15);
+			dashing--;
 		} else {
-			setPathToDisplay(cycle/2 % 8 + 8);
+			if (currentDirection != indicator) {
+				cycle = 0;
+				indicator = currentDirection;
+			} else
+				cycle++;
+			if (currentDirection == 'N') {
+				setPathToDisplay(cycle/2 % 8);
+			} else {
+				setPathToDisplay(cycle/2 % 8 + 8);
+			}
 		}
 
 		super.process();
