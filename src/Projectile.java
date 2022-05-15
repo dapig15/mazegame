@@ -45,6 +45,7 @@ public abstract class Projectile extends ObjectWithColliders {
 		this.framesLeftAlive = framesLeftAlive;
 		this.canHitType = canHitType;
 		this.damage = damage;
+		this.setObeysGravity(false);
 	}
 	
 	// if shouldKill>=0, yes. else, no

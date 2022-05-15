@@ -49,6 +49,15 @@ public class Player extends Entity {
 					PictureFixer.removeBackground(ImageIO.read(new File("dash9.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("dash8.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("dash7.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot14.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot13.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot12.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot11.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot10.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot9.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot8.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot7.png"))),
+					PictureFixer.removeBackground(ImageIO.read(new File("shoot6.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("28.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("27.png"))),
 					PictureFixer.removeBackground(ImageIO.read(new File("26.png"))),
@@ -82,7 +91,8 @@ public class Player extends Entity {
 	}
 
 	private int jumpsLeft = 0, maxJumps = 2;
-	private int cycle = 0, dashing = 0, dashFrames = 12;
+	private int cycle = 0, dashing = 0, dashFrames = 12, shooting = 0, shootFrames = 18;
+	private boolean shootDelay = true;
 	private char indicator = 'N';
 	private char currentDirection = 'N';
 	private PlayerKeyAdapter pka = new PlayerKeyAdapter();
@@ -205,20 +215,27 @@ public class Player extends Entity {
 	
 	@Override
 	void process() {
-		
-    	if (spawnProjectile && projectileCooldown == 0 && projectilesLeft > 0) {
-    		Point mousePosition = MouseInfo.getPointerInfo().getLocation();
+		if (shootDelay && shooting == 0) {
+			Point mousePosition = MouseInfo.getPointerInfo().getLocation();
     		SwingUtilities.convertPointFromScreen(mousePosition, mainPanel);
 			double angle = Math.atan2(mousePosition.getY()-(screenY), mousePosition.getX()-(screenX));
-			//ProjectileTest testArrow = new ProjectileTest(getX(), getY(), angle, 20);
-			ProjectileTestBoomerang2 testBoomerang = new ProjectileTestBoomerang2(getX(), getY(), angle, 20, this);
-			if (/*testArrow.shouldKill() < 0*/ testBoomerang.shouldKill() < 0) {
-				//Main.projectiles.add(testArrow);
-				Main.projectiles.add(testBoomerang);
+			ProjectileTest testArrow = new ProjectileTest(getX(), getY()-18, (getHasTurnedLeft() ? Math.PI : 0), 20);
+			//ProjectileTestBoomerang2 testBoomerang = new ProjectileTestBoomerang2(getX(), getY(), angle, 20, this);
+			if (testArrow.shouldKill() < 0 /*testBoomerang.shouldKill() < 0*/) {
+				Main.projectiles.add(testArrow);
+				//Main.projectiles.add(testBoomerang);
 			}
-			projectileCooldown = 4;
+			projectileCooldown = 17;
 			//projectilesLeft--;
+			shootDelay = false;
+		}
+    	if (spawnProjectile && projectileCooldown == 0 && projectilesLeft > 0) {
+			shootDelay = true;
+			if (shooting == 0) {
+				shooting = shootFrames;
+			}
     	}
+
     	projectileCooldown = Math.max(0, projectileCooldown-1);
 
 		// movement
@@ -253,7 +270,10 @@ public class Player extends Entity {
 		dashCooldown = Math.max(0, dashCooldown-1);
 		dashWindow = Math.max(0, dashWindow-1);
 		
-		if (dashing > 0) {
+		if (shooting > 0) {
+			setPathToDisplay((9-shooting/2) + 22);
+			shooting--;
+		} else if (dashing > 0) {
 			setPathToDisplay((6-dashing/2) + 15);
 			dashing--;
 		} else {
